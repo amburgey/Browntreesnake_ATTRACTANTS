@@ -55,8 +55,8 @@ all3$Cap <- ifelse(is.na(all3$PITTAG), 0, 1)
 test <- dcast(data = all3, formula = PITTAG ~ Date2, length)
 
 
-test1 <- test1[order(test1$Date2, test1$TRANSECT, all3$TRANID),]
-test2 <- test2[order(test2$Date2, test2$TRANSECT, survpts$TRANID),]
+all3 <- all3[order(all3$Date2, all3$TRANSECT, all3$TRANID),]
+survpts <- survpts[order(survpts$Date2, survpts$TRANSECT, survpts$TRANID),]
 
 comp <- matrix(NA)
 for (i in 1:nrow(all3)){
