@@ -1,0 +1,31 @@
+
+model {
+  lam1 ~ dunif(0,5)  # Lure
+  lam2 ~ dunif(0,5)  # No lure
+  sigma ~ dunif(0,50)
+  psi ~ dunif(0,1)
+
+  for(i in 1:M){
+    z[i] ~ dbern(psi)
+    s[i,1] ~ dunif(Xl,Xu)
+    s[i,2] ~ dunif(Yl,Yu)
+    
+    ## NO LURE SURVEYS ##
+    for(t in 1:JNL) {
+      dNL[i,t]<- pow(s[i,1]-nolurepts[t,1],2) + pow(s[i,2]-nolurepts[t,2],2)
+      pNL[i,t]<- z[i]*lam2*exp(-(dNL[i,t])/(2*sigma*sigma))
+      ynolure[i,j] ~ dpois(pNL[i,j]*KNL)
+    }
+    
+    ## LURE SURVEYS ##
+    for(j in 1:JL){
+      dL[i,j]<- pow(pow(s[i,1]-lurepts[j,1],2) + pow(s[i,2]-lurepts[j,2],2),0.5)
+      pL[i,j]<- z[i]*lam1*exp(-(dL[i,j]*dL[i,j])/(2*sigma*sigma))
+      ylure[i,j] ~ dpois(pL[i,j]*KL)   
+    }
+  }
+  
+  N <- sum(z[])
+  D <- N/A
+  
+}
