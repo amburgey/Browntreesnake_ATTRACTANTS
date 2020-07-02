@@ -87,17 +87,17 @@ model {
     s[i,2] ~ dunif(Yl,Yu)
     
     ## NO LURE SURVEYS ##
-    for(t in 1:JNL) {
-      dNL[i,t]<- pow(s[i,1]-nolurepts[t,1],2) + pow(s[i,2]-nolurepts[t,2],2)
-      pNL[i,t]<- z[i]*lam2*exp(-(dNL[i,t])/(2*sigma*sigma))
+    for(j in 1:JNL) {
+      dNL[i,j]<- pow(s[i,1]-nolurepts[j,1],2) + pow(s[i,2]-nolurepts[j,2],2)
+      pNL[i,j]<- z[i]*lam2*exp(-(dNL[i,j])/(2*sigma*sigma))
       ynolure[i,j] ~ dpois(pNL[i,j]*KNL)
     }
     
     ## LURE SURVEYS ##
-    for(j in 1:JL){
-      dL[i,j]<- pow(pow(s[i,1]-lurepts[j,1],2) + pow(s[i,2]-lurepts[j,2],2),0.5)
-      pL[i,j]<- z[i]*lam1*exp(-(dL[i,j]*dL[i,j])/(2*sigma*sigma))
-      ylure[i,j] ~ dpois(pL[i,j]*KL)   
+    for(k in 1:JL){
+      dL[i,k]<- pow(pow(s[i,1]-lurepts[k,1],2) + pow(s[i,2]-lurepts[k,2],2),0.5)
+      pL[i,k]<- z[i]*lam1*exp(-(dL[i,k]*dL[i,k])/(2*sigma*sigma))
+      ylure[i,k] ~ dpois(pL[i,k]*KL)   
     }
   }
   
