@@ -67,7 +67,7 @@ PrepDat <- function(caps,survs){
   ##### Create Transect grid cell by Date dataframe to indicate active/inactive (walked/not walked) #####
   actNTL <- ntl[,c("Date2","TRANID")]
   actNTL$Active <- 1
-  actNTL <- dcast(actNTL, TRANID ~ Date2)
+  actNTL <- reshape2::dcast(actNTL, TRANID ~ Date2)
   actNTL <- actNTL %>% mutate_if(is.numeric, ~1 * (. > 0))  
   ## Sort here so everything matching below
   actNTL$test <- factor(actNTL$TRANID,levels=siteord)
@@ -75,7 +75,7 @@ PrepDat <- function(caps,survs){
   
   actTL <- tl[,c("Date2","TRANID")]
   actTL$Active <- 1
-  actTL <- dcast(actTL, TRANID ~ Date2)
+  actTL <- reshape2::dcast(actTL, TRANID ~ Date2)
   actTL <- actTL %>% mutate_if(is.numeric, ~1 * (. > 0))
   ## Sort here so everything matching below
   actTL$test <- factor(actTL$TRANID,levels=siteord)
@@ -88,12 +88,12 @@ PrepDat <- function(caps,survs){
   ## Sum of captures equals capture raw data - 2 snakes removed above not on transects
   ntl$Cap <- ifelse(is.na(ntl$PITTAG), 0, 1)
   NL <- ntl[,12]
-  snksNTL <- dcast(data = ntl, formula = PITTAG ~ TRANID)[-95,]
+  snksNTL <- reshape2::dcast(data = ntl, formula = PITTAG ~ TRANID)[-95,]
   snksNTL <- setcolorder(snksNTL, siteord)
   
   tl$Cap <- ifelse(is.na(tl$PITTAG), 0, 1)
   L <- tl[,12]
-  snksTL <- dcast(data = tl, formula = PITTAG ~ TRANID)[-63,]
+  snksTL <- reshape2::dcast(data = tl, formula = PITTAG ~ TRANID)[-63,]
   snksTL <- setcolorder(snksTL, actTL$TRANID)
   
   
