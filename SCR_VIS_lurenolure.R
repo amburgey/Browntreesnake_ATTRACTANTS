@@ -110,7 +110,7 @@ model {
 nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
 
 # data and constants
-jags.data <- list (ynolure=ynolure, ylure=ylure, X=X, M=M, JNL=JNL, JL=JL, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, KNL=KNL, KL=KL)
+jags.data <- list (ynolure=ynolure, ylure=ylure, X=X, M=M, JNL=JNL, JL=JL, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, KNL=KNL, KL=KL, lurepts=lurepts, nolurepts=nolurepts)
 
 inits <- function(){
   list (sigma=runif(1,1,50), z=c(rep(1,nindNL),rep(0,M-nindNL)), s=sst, psi=runif(1), lam1=runif(1,.5,1.5), lam1=runif(1,.5,1.5))
