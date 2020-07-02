@@ -3,6 +3,14 @@
 ### The goal is to understand if detection probability is different between these two scenarios
 ### In the case of an incipient or suppressed (low density) population, any way that can maximize detection probability of brown treesnakes can be a useful resource for surveyors
 
+library(dplyr)
+library(reshape2)
+library(tidyverse)
+library(secr)
+library(jagsUI)
+library(data.table)
+
+
 PrepDat <- function(caps,survs){
 
   ##### CAPTURE DATA #####
@@ -80,11 +88,13 @@ PrepDat <- function(caps,survs){
   ## Sum of captures equals capture raw data - 2 snakes removed above not on transects
   ntl$Cap <- ifelse(is.na(ntl$PITTAG), 0, 1)
   NL <- ntl[,12]
-  snksNTL <- dcast(data = ntl, formula = PITTAG ~ Date2)[-95,]
+  snksNTL <- dcast(data = ntl, formula = PITTAG ~ TRANID)[-95,]
+  snksNTL <- setcolorder(snksNTL, siteord)
   
   tl$Cap <- ifelse(is.na(tl$PITTAG), 0, 1)
   L <- tl[,12]
-  snksTL <- dcast(data = tl, formula = PITTAG ~ Date2)[-63,]
+  snksTL <- dcast(data = tl, formula = PITTAG ~ TRANID)[-63,]
+  snksTL <- setcolorder(snksTL, actTL$TRANID)
   
   
   prepdat <- list(actNTL = actNTL, snksNTL = snksNTL, actTL = actTL, snksTL = snksTL)

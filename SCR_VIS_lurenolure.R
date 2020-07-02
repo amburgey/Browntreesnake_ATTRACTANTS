@@ -6,11 +6,6 @@
 
 rm(list = ls())
 
-library(dplyr)
-library(reshape2)
-library(tidyverse)
-library(secr)
-library(jagsUI)
 
 source("PrepData.R")
 
@@ -40,14 +35,14 @@ Yu<-max(locs[,2]) + delta
 A <- (Xu-Xl)*(Yu-Yl)
 
 # Observations
-ynolure <- as.matrix(dat$snksNTL[,-1])
+ynolure <- as.matrix(dat$snksNTL[,-352])
 colnames(ynolure) <- NULL
-ylure <- as.matrix(dat$snksTL[,-1])
+ylure <- as.matrix(dat$snksTL[,-170])
 colnames(ylure) <- NULL
 
 ## Number of locations (VIS lure/no lure points)
-JNL <- nrow(ynolure)
-JL <- nrow(ylure)
+JNL <- nrow(dat$actNTL)
+JL <- nrow(dat$actTL)
 
 # Active/not active for when transects run (one less day surveyed for TL)
 actNTL <- dat$actNTL[,-c(1,32)]
