@@ -111,7 +111,7 @@ nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
 jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, act=act, STATUS=stat, nocc=nocc)
 
 inits <- function(){
-  list (sigma=runif(1,1,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(1,0,0.3))
+  list (sigma=runif(1,1,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0,0.3))
 }
 
 parameters <- c("sigma","psi","N","D","lam0","p")
