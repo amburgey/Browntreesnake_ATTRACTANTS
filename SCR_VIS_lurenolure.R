@@ -19,9 +19,13 @@ dat <- PrepDat(caps,survs)
 
 # Create trapping grid of CP dimensions (5 ha, 50,000 m2)
 locs <- secr::make.grid(nx = 13, ny = 27, spacex = 16, spacey = 8)
-X <- as.matrix(locs)
-nolurepts <- X
-lurepts <- X[c(14:26,40:52,66:78,92:104,118:130,144:156,170:182,196:208,222:234,248:260,274:286,300:312,326:338),]
+pts <- as.matrix(locs)
+
+## Number of locations (VIS lure/no lure points)
+J <- nrow(pts)
+
+# nolurepts <- X
+# lurepts <- X[c(14:26,40:52,66:78,92:104,118:130,144:156,170:182,196:208,222:234,248:260,274:286,300:312,326:338),]
 
 ## Define state-space of point process. (i.e., where animals live).
 ## "delta" just adds a fixed buffer to the outer extent of the traps.
@@ -35,69 +39,63 @@ Yu<-max(locs[,2]) + delta
 A <- (Xu-Xl)*(Yu-Yl)
 
 # Observations
-ynolure <- as.matrix(dat$snksNTL[,-352])
-colnames(ynolure) <- NULL
-ylure <- as.matrix(dat$snksTL[,-170])
-colnames(ylure) <- NULL
-
-## Number of locations (VIS lure/no lure points)
-JNL <- nrow(dat$actNTL)
-JL <- nrow(dat$actTL)
-
-# Active/not active for when transects run (one less day surveyed for TL)
-actNTL <- dat$actNTL[,-c(1,32)]
-colnames(actNTL) <- NULL
-actTL <- dat$actTL[,-c(1,31)]
-colnames(actTL) <- NULL
+y <- dat$snks
+colnames(y) <- NULL
+rownames(y) <- NULL
 
 # Uniquely marked individuals
-nindNL <- nrow(ynolure)
-nindL <- nrow(ylure)
+nind <- nrow(y)
+
+# Active/not active for when transects run (one less day surveyed for TL)
+act <- as.matrix(dat$act[,-1])
+colnames(act) <- NULL
+
+# Status of surveys (1 = not active, 2 = active but no lure, 3 = active and lure)
+stat <- as.matrix(dat$stat[,-1])
+
+# Number of survey occasions
+nocc <- ncol(act)
 
 ## Date augmentation
 M <- 250
-ynolure <-rbind(ynolure,array(0,dim=c((M-nrow(ynolure)),ncol(ynolure))))
-ylure <-rbind(ylure,array(0,dim=c((M-nrow(ylure)),ncol(ylure))))
+y <-abind(y,array(0,dim=c((M-nrow(y)),ncol(y),nocc)), along = 1)
+
+
 
 ## Effort
-KNL <- rowSums(actNTL)
-KL <- rowSums(actTL)
+# K <- rowSums(act)
 
 ## Starting values for activity centers
 ## set inits of AC to mean location of individuals and then to some area within stat space for augmented
 set.seed(552020)
-sst <- cbind(runif(M,Xl,Xu),runif(M,Yl,Yu))
-for(i in 1:nindNL){
-  sst[i,1] <- mean( X[ynolure[i,]>0,1] )
-  sst[i,2] <- mean( X[ynolure[i,]>0,2] )
+sst <- array(0,dim=c(M,2,nocc))
+for (i in 1:M){
+    sst[i,1,] <- runif(1,Xl,Xu)
+    sst[i,2,] <- runif(1,Yl,Yu)
 }
-
 
 ## JAGS model
 cat(file="SCR0_DataAug.txt","
 model {
-  lam1 ~ dunif(0,5)  # Lure
-  lam2 ~ dunif(0,5)  # No lure
+
+  for(i in 1:3){
+    lam0[i]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
+  }
   sigma ~ dunif(0,50)
   psi ~ dunif(0,1)
 
   for(i in 1:M){
     z[i] ~ dbern(psi)
-    s[i,1] ~ dunif(Xl,Xu)
-    s[i,2] ~ dunif(Yl,Yu)
     
-    ## NO LURE SURVEYS ##
-    for(j in 1:JNL) {
-      dNL[i,j]<- pow(s[i,1]-nolurepts[j,1],2) + pow(s[i,2]-nolurepts[j,2],2)
-      pNL[i,j]<- z[i]*lam2*exp(-(dNL[i,j])/(2*sigma*sigma))
-      ynolure[i,j] ~ dpois(pNL[i,j]*KNL)
-    }
+    for(k in 1:nocc){
+      s[i,1,k] ~ dunif(Xl,Xu)
+      s[i,2,k] ~ dunif(Yl,Yu)
     
-    ## LURE SURVEYS ##
-    for(k in 1:JL){
-      dL[i,k]<- pow(pow(s[i,1]-lurepts[k,1],2) + pow(s[i,2]-lurepts[k,2],2),0.5)
-      pL[i,k]<- z[i]*lam1*exp(-(dL[i,k]*dL[i,k])/(2*sigma*sigma))
-      ylure[i,k] ~ dpois(pL[i,k]*KL)   
+      for(j in 1:J) {
+        d[i,j,k]<- pow(s[i,1,k]-pts[j,1],2) + pow(s[i,2,k]-pts[j,2],2)
+        p[i,j,k]<- z[i]*lam0[STATUS[j,k]]*exp(-(d[i,j,k]*d[i,j,k])/(2*sigma*sigma))
+        y[i,j,k] ~ dbin(p[i,j,k],act[j,k])
+      }
     }
   }
   
@@ -110,26 +108,17 @@ model {
 nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
 
 # data and constants
-jags.data <- list (ynolure=ynolure, ylure=ylure, X=X, M=M, JNL=JNL, JL=JL, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, KNL=KNL, KL=KL, lurepts=lurepts, nolurepts=nolurepts)
+jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, act=act, STATUS=stat, nocc=nocc)
 
 inits <- function(){
-  list (sigma=runif(1,1,50), z=c(rep(1,nindNL),rep(0,M-nindNL)), s=sst, psi=runif(1), lam1=runif(1,.5,1.5), lam1=runif(1,.5,1.5))
+  list (sigma=runif(1,1,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(1,0,0.3))
 }
 
-parameters <- c("sigma","psi","N","D","lam1","lam2","pNL","pL")
+parameters <- c("sigma","psi","N","D","lam0","p")
 
 out <- jagsUI("SCR0_DataAug.txt", data=jags.data, inits=inits, parallel=TRUE,
             n.chains=nc, n.burnin=nb,n.adapt=nAdapt, n.iter=ni, parameters.to.save=parameters)
 
 save(out, file="SCRVISlurenolure.RData")
 
-print(out)
-traceplot(out$samples[,"lam1"])
-
-# gamma parameters for sigma
-a.sigma = (out$mean$sigma)^2/(out$sd$sigma)^2
-b.sigma = out$mean$sigma/(out$sd$sigma)^2
-N = out$mean$N
-
-plot(rgamma(N, a.sigma, b.sigma), type = "h", xlim=c(0,130))
 

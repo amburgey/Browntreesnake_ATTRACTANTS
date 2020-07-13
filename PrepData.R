@@ -9,6 +9,7 @@ library(tidyverse)
 library(secr)
 library(jagsUI)
 library(data.table)
+library(abind)
 
 
 PrepDat <- function(caps,survs){
@@ -20,6 +21,8 @@ PrepDat <- function(caps,survs){
   caps$Date2 <- as.Date(as.character(caps$Date), format = "%d-%b-%y")
   ## Add transect ID
   caps$TRANID <- paste(caps$TRANSECT,caps$LOCATION, sep="")
+  ## One EFFORTID seems to be incorrect for a survey - changed EFFORTID 12219 for X5 on 2015-03-03 to EFFORTID 12229
+  caps$EFFORTID[which(caps$EFFORTID == "12219" & caps$Date2 == "2015-03-03" & caps$TRANID == "X5")] <- "12229"
   
   
   ##### SURVEY DATA #####
@@ -44,7 +47,17 @@ PrepDat <- function(caps,survs){
   ## T transect is TL when BHNZ is being run (23-March to 30-March) but NTL otherwise
   ## Remove two snakes found on forest edge and concrete barrier (i.e., not on transect)
   all3 <- all2[!(!is.na(all2$PITTAG) & is.na(all2$LOCATION)),]
-  ## all3 has a weird number of rows that doesn't match surveypts because sometimes more than one snake found at a point and also some snakes found on random other transects while searching (i.e., wouldn't show up as being surveyed in the survey file)
+  ## all3 has a weird number of rows that doesn't match surveypts because sometimes more than one snake found at a point
+  ## Some snakes found on random other transects while searching (i.e., wouldn't show up as being surveyed in the survey file) > removed
+  all3 <- all3[!(all3$EFFORTID == "12096" & all3$TRANID == "Q8"),]
+  all3 <- all3[!(all3$EFFORTID == "12144" & all3$TRANID == "T12"),]
+  all3 <- all3[!(all3$EFFORTID == "12191" & all3$TRANID == "W7"),]
+  all3 <- all3[!(all3$EFFORTID == "12352" & all3$TRANID == "Z5"),]
+  all3 <- all3[!(all3$EFFORTID == "12335" & all3$TRANID == "B13"),]
+  all3 <- all3[!(all3$EFFORTID == "12279" & all3$TRANID == "C1"),]
+  all3<- all3[!(all3$EFFORTID == "12318" & all3$TRANID == "T3"),]
+  all3 <- all3[!(all3$EFFORTID == "12319" & all3$TRANID == "H6"),]
+  
   ## Add TYPE == NTL to all with missing survey info, found in MASTER-ARCHIVAL-MARKREL-ALL file
   for(i in 1:nrow(all3)){
     if(!is.na(all3[i,6]) & is.na(all3[i,12])){
@@ -52,10 +65,10 @@ PrepDat <- function(caps,survs){
     }
   }
   
+  all3$TRANID <- factor(all3$TRANID,levels=siteord)
+  all3 <- all3[order(all3$TRANID),]
   
   ##### Split into TL and NTL datasets to create capture and active dataframes #####
-  ntl <- subset(all3, TYPE == "NTL")
-  tl <- subset(all3, TYPE == "TL")
   ## out of interest, quick sum of number of snakes caught on each kind of survey
   # ct1 <- ntl %>% summarise(NTLcount = sum(!is.na(PITTAG)))
   # sur1 <- ntl %>% summarise(NTLsurvs = sum(!is.na(Date2)))
@@ -65,39 +78,27 @@ PrepDat <- function(caps,survs){
   # ratioTL <- ct2/sur2  # Raw data looks slightly (very) higher rate of picking up snakes on VIS lure
   
   ##### Create Transect grid cell by Date dataframe to indicate active/inactive (walked/not walked) #####
-  actNTL <- ntl[,c("Date2","TRANID")]
-  actNTL$Active <- 1
-  actNTL <- reshape2::dcast(actNTL, TRANID ~ Date2)
-  actNTL <- actNTL %>% mutate_if(is.numeric, ~1 * (. > 0))  
-  ## Sort here so everything matching below
-  actNTL$test <- factor(actNTL$TRANID,levels=siteord)
-  actNTL <- actNTL[order(actNTL$test),]
+  act <- all3[,c("Date2","TRANID")]
+  act$Active <- 1
+  act <- reshape2::dcast(act, TRANID ~ Date2, fun.aggregate = length, value.var = "Active")
+  act <- act %>% mutate_if(is.numeric, ~1 * (. > 0))
   
-  actTL <- tl[,c("Date2","TRANID")]
-  actTL$Active <- 1
-  actTL <- reshape2::dcast(actTL, TRANID ~ Date2)
-  actTL <- actTL %>% mutate_if(is.numeric, ~1 * (. > 0))
-  ## Sort here so everything matching below
-  actTL$test <- factor(actTL$TRANID,levels=siteord)
-  actTL <- actTL[order(actTL$test),]
-  
+  ##### Create TRAP by Date dataframe #####
+  ## STATUS of trap on each date
+  ## Inactive = 1
+  ## Active with no lure = 2
+  ## Active with lure = 3
+  suball <- all3[,c(3,5,12)]
+  suball$TYPE <- ifelse(suball$TYPE == "NTL", 2, 3)
+  stat <- reshape2::dcast(suball, TRANID ~ Date2, value.var = "TYPE", fun.aggregate = unique, fill = 1)
   
   ##### Create PITTAG by Date dataframe #####
   ## Add 0 or 1 to indicate captured snake at survey
   ## Missing 028347041 from original captures file, never seen during this period of time aside from once when not on transect (removed above)
   ## Sum of captures equals capture raw data - 2 snakes removed above not on transects
-  ntl$Cap <- ifelse(is.na(ntl$PITTAG), 0, 1)
-  NL <- ntl[,12]
-  snksNTL <- reshape2::dcast(data = ntl, formula = PITTAG ~ TRANID)[-95,]
-  snksNTL <- setcolorder(snksNTL, siteord)
+  snks <- reshape2::acast(data = all3, formula = PITTAG ~ TRANID ~ Date2, fun.aggregate = length, value.var = "TYPE")[-110,,]
   
-  tl$Cap <- ifelse(is.na(tl$PITTAG), 0, 1)
-  L <- tl[,12]
-  snksTL <- reshape2::dcast(data = tl, formula = PITTAG ~ TRANID)[-63,]
-  snksTL <- setcolorder(snksTL, actTL$TRANID)
-  
-  
-  prepdat <- list(actNTL = actNTL, snksNTL = snksNTL, actTL = actTL, snksTL = snksTL)
+  prepdat <- list(act = act, snks = snks, stat = stat)
   
   return(prepdat)
 
