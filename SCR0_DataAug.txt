@@ -1,8 +1,8 @@
 
 model {
 
-  for(i in 1:3){
-    lam0[i]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
+  for(l in 1:3){
+    lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
   }
   sigma ~ dunif(0,50)
   psi ~ dunif(0,1)
@@ -17,7 +17,7 @@ model {
       for(j in 1:J) {
         d[i,j,k]<- pow(s[i,1,k]-pts[j,1],2) + pow(s[i,2,k]-pts[j,2],2)
         p[i,j,k]<- z[i]*lam0[STATUS[j,k]]*exp(-(d[i,j,k]*d[i,j,k])/(2*sigma*sigma))
-        y[i,j,k] ~ dbin(p[i,j,k],act[j,k])
+        y[i,j,k] ~ dbinom(p[i,j,k],act[j,k])
       }
     }
   }

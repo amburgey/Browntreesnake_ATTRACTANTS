@@ -68,33 +68,34 @@ y <-abind(y,array(0,dim=c((M-nrow(y)),ncol(y),nocc)), along = 1)
 ## Starting values for activity centers
 ## set inits of AC to mean location of individuals and then to some area within stat space for augmented
 set.seed(552020)
-sst <- array(0,dim=c(M,2,nocc))
-for (i in 1:M){
-    sst[i,1,] <- runif(1,Xl,Xu)
-    sst[i,2,] <- runif(1,Yl,Yu)
+sst <- cbind(runif(M,Xl,Xu),runif(M,Yl,Yu))
+sumy <- rowSums(y, dims=2)
+for (i in 1:nind){
+  for(k in 1:nocc){
+    sst[i,1] <- mean(pts[sumy[i,]>0,1])
+    sst[i,2] <- mean(pts[sumy[i,]>0,2])
+  }
 }
 
 ## JAGS model
 cat(file="SCR0_DataAug.txt","
 model {
 
-  for(i in 1:3){
-    lam0[i]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
+  for(l in 1:3){
+    lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
   }
   sigma ~ dunif(0,50)
   psi ~ dunif(0,1)
 
   for(i in 1:M){
     z[i] ~ dbern(psi)
-    
-    for(k in 1:nocc){
-      s[i,1,k] ~ dunif(Xl,Xu)
-      s[i,2,k] ~ dunif(Yl,Yu)
-    
+    s[i,1] ~ dunif(Xl,Xu)
+    s[i,2] ~ dunif(Yl,Yu)
+  
       for(j in 1:J) {
-        d[i,j,k]<- pow(s[i,1,k]-pts[j,1],2) + pow(s[i,2,k]-pts[j,2],2)
-        p[i,j,k]<- z[i]*lam0[STATUS[j,k]]*exp(-(d[i,j,k]*d[i,j,k])/(2*sigma*sigma))
-        y[i,j,k] ~ dbin(p[i,j,k],act[j,k])
+        d[i,j,k]<- pow(s[i,1]-pts[j,1],2) + pow(s[i,2]-pts[j,2],2)
+        p[i,j,k]<- z[i]*lam0[STATUS[j,k]]*exp(-(d[i,j]*d[i,j])/(2*sigma*sigma))
+        y[i,j,k] ~ dbinom(p[i,j,k],act[j,k])
       }
     }
   }
@@ -105,7 +106,7 @@ model {
 }")
 
 # MCMC settings
-nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
+nc <- 3; nAdapt=100; nb <- 1; ni <- 200+nb; nt <- 1
 
 # data and constants
 jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, act=act, STATUS=stat, nocc=nocc)
