@@ -24,9 +24,6 @@ pts <- as.matrix(locs)
 ## Number of locations (VIS lure/no lure points)
 J <- nrow(pts)
 
-# nolurepts <- X
-# lurepts <- X[c(14:26,40:52,66:78,92:104,118:130,144:156,170:182,196:208,222:234,248:260,274:286,300:312,326:338),]
-
 ## Define state-space of point process. (i.e., where animals live).
 ## "delta" just adds a fixed buffer to the outer extent of the traps.
 ## Don't need to estimate state-space since we know it (5 ha enclosed pop)
@@ -61,9 +58,6 @@ M <- 250
 y <-abind(y,array(0,dim=c((M-nrow(y)),ncol(y),nocc)), along = 1)
 
 
-
-## Effort
-# K <- rowSums(act)
 
 ## Starting values for activity centers
 ## set inits of AC to mean location of individuals and then to some area within stat space for augmented
