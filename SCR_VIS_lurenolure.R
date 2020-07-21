@@ -78,7 +78,7 @@ model {
   for(l in 1:3){
     lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
   }
-  sigma ~ dunif(0,100)
+  sigma ~ dunif(0,50)
   psi ~ dunif(0,1)
 
   for(i in 1:M){
@@ -108,7 +108,7 @@ nc <- 3; nAdapt=100; nb <- 1; ni <- 200+nb; nt <- 1
 jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, act=act, STATUS=stat, nocc=nocc)
 
 inits <- function(){
-  list (sigma=runif(1,80,100), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0,0.07))
+  list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0,0.07))
 }
 
 parameters <- c("sigma","psi","N","D","lam0","p")
