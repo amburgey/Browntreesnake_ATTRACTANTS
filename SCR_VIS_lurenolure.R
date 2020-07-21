@@ -84,7 +84,7 @@ model {
   for(l in 1:3){
     lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
   }
-  sigma ~ dunif(0,50)
+  sigma ~ dunif(0,100)
   psi ~ dunif(0,1)
 
   for(i in 1:M){
@@ -92,8 +92,10 @@ model {
     s[i,1] ~ dunif(Xl,Xu)
     s[i,2] ~ dunif(Yl,Yu)
   
-      for(j in 1:J) {
-        d[i,j,k]<- pow(s[i,1]-pts[j,1],2) + pow(s[i,2]-pts[j,2],2)
+    for(j in 1:J) {
+      d[i,j]<- pow(s[i,1]-pts[j,1],2) + pow(s[i,2]-pts[j,2],2)
+        
+      for(k in 1:nocc){
         p[i,j,k]<- z[i]*lam0[STATUS[j,k]]*exp(-(d[i,j]*d[i,j])/(2*sigma*sigma))
         y[i,j,k] ~ dbinom(p[i,j,k],act[j,k])
       }
@@ -112,7 +114,7 @@ nc <- 3; nAdapt=100; nb <- 1; ni <- 200+nb; nt <- 1
 jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, act=act, STATUS=stat, nocc=nocc)
 
 inits <- function(){
-  list (sigma=runif(1,1,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0,0.3))
+  list (sigma=runif(1,80,100), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0,0.07))
 }
 
 parameters <- c("sigma","psi","N","D","lam0","p")
