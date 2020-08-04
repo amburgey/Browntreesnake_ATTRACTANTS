@@ -87,10 +87,10 @@ model {
     s[i,2] ~ dunif(Yl,Yu)
   
     for(j in 1:J) {
-      d[i,j]<- pow(s[i,1]-pts[j,1],2) + pow(s[i,2]-pts[j,2],2)
+      d2[i,j]<- pow(s[i,1]-pts[j,1],2) + pow(s[i,2]-pts[j,2],2)
         
       for(k in 1:nocc){
-        p[i,j,k]<- z[i]*lam0[STATUS[j,k]]*exp(-(d[i,j]*d[i,j])/(2*sigma*sigma))
+        p[i,j,k]<- z[i]*lam0[STATUS[j,k]]*exp(-(d2[i,j])/(2*sigma*sigma))
         y[i,j,k] ~ dbinom(p[i,j,k],act[j,k])
       }
     }
@@ -108,7 +108,7 @@ nc <- 3; nAdapt=100; nb <- 1; ni <- 200+nb; nt <- 1
 jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, act=act, STATUS=stat, nocc=nocc)
 
 inits <- function(){
-  list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0,0.07))
+  list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0.01,0.07))
 }
 
 parameters <- c("sigma","psi","N","D","lam0","p")
