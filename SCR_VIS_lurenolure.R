@@ -75,7 +75,7 @@ for (i in 1:nind){
 cat(file="SCR0_DataAug.txt","
 model {
 
-  for(l in 1:3){
+  for(l in 1:2){
     lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
   }
   sigma ~ dunif(0,50)
@@ -89,9 +89,9 @@ model {
     for(j in 1:J) {
       d[i,j]<- pow(s[i,1]-pts[j,1],2) + pow(s[i,2]-pts[j,2],2)
         
-      for(k in 1:nocc){
-        p[i,j,k]<- z[i]*lam0[STATUS[j,k]]*exp(-(d[i,j]*d[i,j])/(2*sigma*sigma))
-        y[i,j,k] ~ dbinom(p[i,j,k],act[j,k])
+      for(k in 1:nActive[j]){
+        p[i,j,ActiveOcc[j,k]] <- z[i]*lam0[STATUS[j,ActiveOcc[j,k]]]*exp(-(d[i,j])/(2*sigma*sigma))
+        y[i,j,ActiveOcc[j,k]] ~ dbern(p[i,j,ActiveOcc[j,k]])
       }
     }
   }
@@ -105,10 +105,16 @@ model {
 nc <- 3; nAdapt=100; nb <- 1; ni <- 200+nb; nt <- 1
 
 # data and constants
-jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, act=act, STATUS=stat, nocc=nocc)
+nActive <- apply(act, 1, sum)
+ActiveOcc <- matrix(NA, J, max(nActive ))
+for(j in 1:J){
+  ActiveOcc[j,1:nActive[j]] <- which(act[j,]==1)
+}
 
+jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, STATUS=stat-1, nActive=nActive, ActiveOcc=ActiveOcc)
+# stat-1 since the only functional categories are 2 and 3... I think.
 inits <- function(){
-  list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0,0.07))
+  list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(2,0.05,0.07))
 }
 
 parameters <- c("sigma","psi","N","D","lam0","p")
