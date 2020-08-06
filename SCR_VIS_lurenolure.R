@@ -117,7 +117,7 @@ inits <- function(){
   list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(2,0.05,0.07))
 }
 
-parameters <- c("sigma","psi","N","D","lam0","p")
+parameters <- c("sigma","psi","N","D","lam0")
 
 out <- jagsUI("SCR0_DataAug.txt", data=jags.data, inits=inits, parallel=TRUE,
             n.chains=nc, n.burnin=nb,n.adapt=nAdapt, n.iter=ni, parameters.to.save=parameters)
