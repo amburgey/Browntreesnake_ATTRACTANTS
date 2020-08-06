@@ -102,7 +102,7 @@ model {
 }")
 
 # MCMC settings
-nc <- 3; nAdapt=100; nb <- 1; ni <- 200+nb; nt <- 1
+nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
 
 # data and constants
 jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, act=act, STATUS=stat, nocc=nocc)
