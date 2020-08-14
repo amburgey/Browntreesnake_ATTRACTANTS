@@ -58,6 +58,7 @@ K <- ncol(ActiveOcc)
 
 # Status of surveys (1 = not active, 2 = active but no lure, 3 = active and lure)
 stat <- as.matrix(dat$stat[,-1])
+colnames(stat) <- NULL
 
 # Number of survey occasions
 nocc <- ncol(act)
@@ -107,8 +108,8 @@ NimModel <- nimbleCode({
       d2[i,j]<- pow(s[i,1]-pts[j,1],2) + pow(s[i,2]-pts[j,2],2)
       
       for(k in 1:nActive[j]){
-        p[i,j,ActiveOcc[1:J,1:K]] <- z[i]*lam0[STATUS[j,ActiveOcc[1:J,1:K]]]*exp(-(d2[i,j])/(2*sigma*sigma))
-        y[i,j,ActiveOcc[1:J,1:K]] ~ dbern(p[i,j,ActiveOcc[1:J,1:K]])
+        p[i,j,ActiveOcc[j,k]] <- z[i]*lam0[STATUS[1:J,ActiveOcc[j,k]]]*exp(-(d2[i,j])/(2*sigma*sigma))
+        y[i,j,ActiveOcc[j,k]] ~ dbern(p[i,j,ActiveOcc[j,k]])
       }
     }
   }
