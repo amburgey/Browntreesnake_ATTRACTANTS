@@ -130,8 +130,15 @@ NimModel <- nimbleCode({
 # )
 
 ## Specifications and data to NIMBLE
-constants <- list(pts=pts, M=M, J=J, K=K, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A)
-data <- list(y=y, ActiveOcc=ActiveOcc, STATUS=stat-1, nActive=nActive)
+#The only problem is how you are defining your data and constants. 
+#So when you define your data in Nimble, it expects something different than if they are constants.
+#It is a little confusing how they define each, but basically ActiveOcc and nActive and STATUS are 
+#all constants since there is nothing to estimate directly from them and they never change within
+#the model. 
+
+constants <- list(pts=pts, M=M, J=J, K=K, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A,
+                  ActiveOcc=ActiveOcc, STATUS=stat-1, nActive=nActive)
+data <- list(y=y)
 ## stat-1 since the only functional categories are 2 and 3 and the nActive forloop will skip inactive traps.
 inits <- list (sigma=40, z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=0.5, lam0=c(0.05,0.07))
 
