@@ -92,7 +92,7 @@ nc = 3; adaptInterval = 500; nb = 10000; ni = 20000+nb; nt = 5
 NimModel <- nimbleCode({
 
   for(l in 1:2){
-    lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator (based on loop below should skip lamo=1 (inactive))
+    lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator (based on loop below should skip lam0=1 (inactive))
   }
   sigma ~ dunif(0,50)
   psi ~ dunif(0,1)
