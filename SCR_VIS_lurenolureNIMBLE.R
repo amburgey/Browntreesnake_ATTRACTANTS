@@ -83,7 +83,7 @@ for (i in 1:nind){
 
 
 # MCMC settings
-nc = 3; adaptInterval = 500; nb = 10000; ni = 20000+nb; nt = 5
+nc = 3; adaptInterval = 500; nb = 10000; ni = 20000+nb; nthin = 5
 
 
 
