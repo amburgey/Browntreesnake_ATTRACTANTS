@@ -6,7 +6,7 @@
 
 rm(list = ls())
 
-library(nimble)
+library(nimble); library(coda)
 
 source("PrepData.R")
 
@@ -162,14 +162,14 @@ end.time-start.time
 save(out, file="SCRVISlurenolureNIMBLE.RData")
 
 ## Summary info
-summary(out[,c('sigma','psi','N','D','lam0')])
-gelman.diag(out[,c('sigma','psi','N','D','lam0')], multivariate=FALSE)
+summary(out[,c('sigma','psi','N','D','lam0[1]','lam0[2]')])
+gelman.diag(out[,c('sigma','psi','N','D','lam0[1]','lam0[2]')], multivariate=FALSE)
 
 traceplot(out[,"N"])
 traceplot(out[,"sigma"])
 traceplot(out[,"lam0"])
 
 ## Effective samples per minute
-effectiveSize(out[,c('sigma','psi','N','D','lam0')]) / as.numeric(end.time-start.time)
+effectiveSize(out[,c('sigma','psi','N','D','lam0[1]','lam0[2]')]) / as.numeric(end.time-start.time)
 
 
