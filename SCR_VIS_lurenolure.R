@@ -102,7 +102,7 @@ model {
 }")
 
 # MCMC settings
-nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
+nc <- 3; nAdapt=1000; nb <- 10000; ni <- 20000+nb; nt <- 1
 
 # data and constants
 nActive <- apply(act, 1, sum)
