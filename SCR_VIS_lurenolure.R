@@ -53,7 +53,7 @@ stat <- as.matrix(dat$stat[,-1])
 # Number of survey occasions
 nocc <- ncol(act)
 
-## Date augmentation
+## Data augmentation
 M <- 250
 y <-abind(y,array(0,dim=c((M-nrow(y)),ncol(y),nocc)), along = 1)
 
@@ -106,7 +106,7 @@ nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
 
 # data and constants
 nActive <- apply(act, 1, sum)
-ActiveOcc <- matrix(NA, J, max(nActive ))
+ActiveOcc <- matrix(NA, J, max(nActive))
 for(j in 1:J){
   ActiveOcc[j,1:nActive[j]] <- which(act[j,]==1)
 }
@@ -123,5 +123,4 @@ out <- jagsUI("SCR0_DataAug.txt", data=jags.data, inits=inits, parallel=TRUE,
             n.chains=nc, n.burnin=nb,n.adapt=nAdapt, n.iter=ni, parameters.to.save=parameters)
 
 save(out, file="SCRVISlurenolure.RData")
-
 
