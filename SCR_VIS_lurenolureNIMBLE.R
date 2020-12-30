@@ -161,7 +161,6 @@ end.time-start.time
 ## Save
 out_meds1 <- data.frame() #storage
 for (s in sc) {
-  for (i in 1:nsim) {
     chains <- as.mcmc.list(list(
       as.mcmc(readRDS(file = here::here('data', paste0('out', s, '_', i, '-', 1, '.Rdata')))[3500:4000,]),
       as.mcmc(readRDS(file = here::here('data', paste0('out', s, '_', i, '-', 2, '.Rdata')))[3500:4000,]),
@@ -171,7 +170,6 @@ for (s in sc) {
     out_temp <- data.frame(t(c(summary(chains)$q[pars,"50%"], max_rhat, i, s)))
     colnames(out_temp) <- c(names(summary(chains)$q[pars,"50%"]), 'max_rhat', 'sim', 'scenario')
     out_meds1 <- rbind(out_meds1, out_temp)
-  } #sims
 }
 
 ## Summary info
