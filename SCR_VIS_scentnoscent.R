@@ -53,11 +53,10 @@ rownames(y) <- NULL
 nind <- nrow(y)
 
 # Active/not active for when transects run (one less day surveyed for TL)
-act <- as.matrix(dat$act[,-1])
-colnames(act) <- NULL
+act <- as.matrix(dat$act)
 
-# Status of surveys (1 = not active, 2 = active but no lure, 3 = active and lure)
-stat <- as.matrix(dat$stat[,-1])
+# Status of surveys (1 = not active, 2 = active but no scent, 3 = active and scent)
+scent <- as.matrix(dat$scent)
 
 # Number of survey occasions
 nocc <- ncol(act)
@@ -66,11 +65,9 @@ nocc <- ncol(act)
 M <- 250
 y <-abind(y,array(0,dim=c((M-nrow(y)),ncol(y),nocc)), along = 1)
 
-
-
 ## Starting values for activity centers
 ## set inits of AC to mean location of individuals and then to some area within stat space for augmented
-set.seed(552020)
+set.seed(2252021)
 sst <- cbind(runif(M,Xl,Xu),runif(M,Yl,Yu))
 sumy <- rowSums(y, dims=2)
 for (i in 1:nind){
@@ -111,7 +108,8 @@ model {
 }")
 
 # MCMC settings
-nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
+# nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
+nc <- 3; nAdapt=1; nb <- 1; ni <- 100+nb; nt <- 1
 
 # data and constants
 nActive <- apply(act, 1, sum)
@@ -120,7 +118,7 @@ for(j in 1:J){
   ActiveOcc[j,1:nActive[j]] <- which(act[j,]==1)
 }
 
-jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, STATUS=stat-1, nActive=nActive, ActiveOcc=ActiveOcc)
+jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, STATUS=scent-1, nActive=nActive, ActiveOcc=ActiveOcc)
 # stat-1 since the only functional categories are 2 and 3... I think.
 inits <- function(){
   list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(2,0.05,0.07))
