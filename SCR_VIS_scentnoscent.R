@@ -78,10 +78,10 @@ for (i in 1:nind){
 }
 
 ## JAGS model
-cat(file="SCR0_DataAug.txt","
+cat(file="SCR0_DataAug3cats.txt","
 model {
 
-  for(l in 1:2){
+  for(l in 1:3){
     lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
   }
   sigma ~ dunif(0,50)
@@ -108,8 +108,8 @@ model {
 }")
 
 # MCMC settings
-# nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
-nc <- 3; nAdapt=1; nb <- 1; ni <- 100+nb; nt <- 1
+nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
+# nc <- 3; nAdapt=1; nb <- 1; ni <- 100+nb; nt <- 1
 
 # data and constants
 nActive <- apply(act, 1, sum)
@@ -119,15 +119,15 @@ for(j in 1:J){
 }
 
 jags.data <- list (y=y, pts=pts, M=M, J=J, Xl=Xl, Xu=Xu, Yl=Yl, Yu=Yu, A=A, STATUS=scent-1, nActive=nActive, ActiveOcc=ActiveOcc)
-# stat-1 since the only functional categories are 2 and 3... I think.
+# stat-1 since the only functional categories are 1, 2 and 3... inactive state becomes 0 this way.
 inits <- function(){
-  list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(2,0.05,0.07))
+  list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0.05,0.07))
 }
 
 parameters <- c("sigma","psi","N","D","lam0")
 
-out <- jagsUI("SCR0_DataAug.txt", data=jags.data, inits=inits, parallel=TRUE,
+out <- jagsUI("SCR0_DataAug3cats.txt", data=jags.data, inits=inits, parallel=TRUE,
             n.chains=nc, n.burnin=nb,n.adapt=nAdapt, n.iter=ni, parameters.to.save=parameters)
 
-save(out, file="SCRVISlurenolure.RData")
+save(out, file="SCRVISscentnoscentGroupOwnCat.RData")
 

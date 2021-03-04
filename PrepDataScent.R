@@ -36,10 +36,20 @@ PrepDat <- function(caps,survs){
   act <- ifelse(as.matrix(survpts[,-1]) > 0, 1, 0)
   
   ## Create matrix of spray vs unsprayed transects (1 = inactive, 2 = active and unsprayed, 3 = active and sprayed)
-  scent <- ifelse(as.matrix(survpts[,-1]) >= 2, 3, 
-                  ifelse(as.matrix(survpts[,-1]) == 1, 2,
-                  ifelse(as.matrix(survpts[,-1]) == 0, 1, 999)))
+  # scent <- ifelse(as.matrix(survpts[,-1]) >= 2, 3, 
+  #                 ifelse(as.matrix(survpts[,-1]) == 1, 2,
+  #                   ifelse(as.matrix(survpts[,-1]) == 0, 1, 999)))
   
+  # scent <- ifelse(as.matrix(survpts[,-1]) == 3, 2, ## change sprayed 24 hrs later to active but not sprayed
+  #                 ifelse(as.matrix(survpts[,-1]) == 2, 3,
+  #                   ifelse(as.matrix(survpts[,-1]) == 1, 2,
+  #                     ifelse(as.matrix(survpts[,-1]) == 0, 1, 999))))
+  
+  scent <- ifelse(as.matrix(survpts[,-1]) == 3, 4, ## change sprayed 24 hrs later to its own category
+                  ifelse(as.matrix(survpts[,-1]) == 2, 3,
+                    ifelse(as.matrix(survpts[,-1]) == 1, 2,
+                      ifelse(as.matrix(survpts[,-1]) == 0, 1, 999))))
+
   ## Create vector to use for sorting
   siteord <- survpts[,1]
   colnames(siteord) <- c("TRANID")
