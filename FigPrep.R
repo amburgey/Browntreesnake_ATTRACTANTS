@@ -17,7 +17,7 @@ cpue$Week <- factor(cpue$Week, levels=c("Average","1","2","3","4","5","6","7","8
 cpue$Symbol <- c("Average",rep("With lure", times=12), "Average", rep("Without lure", times=12))
 
 
-plot1 <- ggplot(data = cpue, aes(x = Week, y = CPUE, fill = Type, group = Type)) +
+plot1a <- ggplot(data = cpue, aes(x = Week, y = CPUE, fill = Type, group = Type)) +
   theme_classic() +
   theme(legend.position="bottom", axis.text = element_text(size=12), axis.title = element_text(size=13), legend.text = element_text(size = 13), legend.title = element_blank()) +
   geom_point(aes(shape = Symbol), size = 4) +
@@ -29,10 +29,38 @@ plot1 <- ggplot(data = cpue, aes(x = Week, y = CPUE, fill = Type, group = Type))
   geom_vline(xintercept = c(1.5, 4.5, 7.5, 10.5, 11.5, 12.5)) +
   annotate("rect",xmin=c(0.5),xmax=c(1.5),ymin=-Inf,ymax=Inf,fill="#999999",alpha=0.2)
 
-png(file="RawDetections.png",width=8,height=6,units="in",res=300)
-plot1
-dev.off()
+# png(file="RawDetections.png",width=8,height=6,units="in",res=300)
+# plot1a
+# dev.off()
 
+cpuesc <- read.csv("CPUEfromScent.csv"); names(cpuesc) <- c("Week","CPUE","CPUE","CPUE")
+cpuesc <- rbind(as.data.frame(matrix(c("Average",mean(cpuesc[,2]),mean(cpuesc[,3]),mean(cpuesc[,4])), nrow = 1, ncol = 4, dimnames = list(1, c("Week","CPUE","CPUE","CPUE")))),cpuesc)
+cpuesc <- rbind(cpuesc[,1:2], cpuesc[,c(1,3)], cpuesc[,c(1,4)])
+cpuesc$Type <- c(rep("Without scent", times=11), rep("Old scent", times=11), rep("Fresh scent", times=11))
+cpuesc$CPUE <- as.numeric(cpuesc$CPUE)
+cpuesc$Week <- factor(cpuesc$Week, levels=c("Average","1","2","3","4","5","6","7","8","9","10"))
+cpuesc$Symbol <- c("Average",rep("Without scent", times=10), "Average", rep("Old scent", times=10), "Average", rep("Fresh scent", times=10))
+## remove 0s so they don't plot
+## No old scent in 4th week, no fresh scent in 4th week (0 snakes captured for old scent in week 5)
+cpuesc <- cpuesc[-c(16,27),]
+
+
+plot1b <- ggplot(data = cpuesc, aes(x = Week, y = CPUE, fill = Type, group = Type)) +
+  theme_classic() +
+  theme(legend.position="bottom", axis.text = element_text(size=12), axis.title = element_text(size=13), legend.text = element_text(size = 13), legend.title = element_blank()) +
+  geom_point(aes(shape = Symbol), size = 4) +
+  scale_shape_manual(values = c(23,21,21,21)) +
+  scale_fill_manual(values = c("#ffc12b","#ee8010","#8e4c09"), breaks = c("Without scent", "Old scent", "Fresh scent"), guide = FALSE) +
+  # ylab("Catch-per unit effort (snakes/km)") +
+  scale_x_discrete("Week", breaks = c("Average","1","2","3","4","5","6","7","8","9","10")) +
+  scale_y_continuous("Catch-per unit effort (snakes/km)", breaks = c(0,0.25,0.5,0.75,1,1.25,1.5), limits = c(0,1.5)) +
+  geom_vline(xintercept = c(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5)) +
+  annotate("rect",xmin=c(0.5),xmax=c(1.5),ymin=-Inf,ymax=Inf,fill="#999999",alpha=0.2) +    geom_text(x=5, y=0.01, label="**")
+
+library(ggpubr)
+png(file="RawDetectionsBoth.png",width=8,height=8.5,units="in",res=600)
+ggarrange(plot1a, plot1b, nrow = 2, ncol = 1, labels = "AUTO")
+dev.off()
 
 
 ##### FIGURE TWO #####
@@ -171,6 +199,6 @@ library(ggpubr)
 # dev.off()
 ## All together
 png(file="EstimatesLuresScents.png",width=10,height=6,units="in",res=600)
-ggarrange(plot2, plot5, nrow = 2, ncol = 1)
+ggarrange(plot2, plot5, nrow = 2, ncol = 1, labels = "AUTO")
 dev.off()
 
