@@ -129,5 +129,5 @@ parameters <- c("sigma","psi","N","D","lam0")
 out <- jagsUI("SCR0_DataAug3cats.txt", data=jags.data, inits=inits, parallel=TRUE,
             n.chains=nc, n.burnin=nb,n.adapt=nAdapt, n.iter=ni, parameters.to.save=parameters)
 
-save(out, file="SCRVISscentnoscentGroupOwnCat.RData")
+save(out, file="SCRVISscentnoscentGroupOwnCatFullTime.RData")
 

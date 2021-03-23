@@ -76,7 +76,8 @@ PrepDat <- function(caps,survs){
   caps$Act <- 1
   caps <- merge(caps, sched, by = c("TRANID","Date2","Act"), all = TRUE)
   caps <- caps[order(caps$TRANID),]
-  snks <- reshape2::acast(data = caps, formula = PITTAG ~ TRANID ~ Date2, fun.aggregate = length, value.var = "EFFORTID")[-97,,]
+  snks <- reshape2::acast(data = caps, formula = PITTAG ~ TRANID ~ Date2, fun.aggregate = length, value.var = "EFFORTID")
+  snks <- snks[-dim(snks)[1],,]
   ## Because added negative data, need to remove row with PITTAG == NA
   
   prepdat <- list(act = act, snks = snks, scent = scent)

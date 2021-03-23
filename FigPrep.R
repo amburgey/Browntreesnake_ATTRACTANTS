@@ -170,7 +170,7 @@ library(ggpubr)
 # plot5
 # dev.off()
 ## All together
-png(file="EstimatesLuresScents.png",width=8,height=6,units="in",res=600)
+png(file="EstimatesLuresScents.png",width=10,height=6,units="in",res=600)
 ggarrange(plot2, plot5, nrow = 2, ncol = 1)
 dev.off()
 

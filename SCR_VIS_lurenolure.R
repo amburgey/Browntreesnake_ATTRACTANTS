@@ -12,7 +12,11 @@ source("PrepData.R")
 
 # Read in capture data and survey data
 caps <- read.csv("Captures.csv")[,c("EFFORTID","Date","PITTAG","SVL","TOTAL","WEIGHT","SEX","TRANSECT","LOCATION")]
+caps <- caps %>%
+  filter(!grepl('Apr', Date))
 survs <- read.csv("Surveys.csv")[,c("EFFORTID","Date","TRANSECT","TYPE")]
+survs <- survs %>%
+  filter(!grepl('Apr', Date))
 
 # Format for analysis
 dat <- PrepDat(caps,survs)
@@ -102,8 +106,8 @@ model {
 }")
 
 # MCMC settings
-# nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
-nc <- 3; nAdapt=10; nb <- 1; ni <- 20+nb; nt <- 1
+nc <- 3; nAdapt=1000; nb <- 1; ni <- 2000+nb; nt <- 1
+# nc <- 3; nAdapt=10; nb <- 1; ni <- 20+nb; nt <- 1
 
 # data and constants
 nActive <- apply(act, 1, sum)
