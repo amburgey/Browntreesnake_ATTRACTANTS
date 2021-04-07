@@ -8,13 +8,13 @@ library(ggplot2); library(jagsUI); library(HDInterval)
 ##### FIGURE ONE #####
 
 
-cpue <- read.csv("CPUEfromAYAreport.csv"); names(cpue) <- c("Week","CPUE","CPUE")
+cpue <- read.csv("CPUEfromLureTruncated.csv"); names(cpue) <- c("Week","CPUE","CPUE")
 cpue <- rbind(as.data.frame(matrix(c("Average",mean(cpue[,2]),mean(cpue[,3])), nrow = 1, ncol = 3, dimnames = list(1, c("Week","CPUE","CPUE")))),cpue)
 cpue <- rbind(cpue[,1:2], cpue[,c(1,3)])
-cpue$Type <- c(rep("With lure", times=13), rep("Without lure", times=13))
+cpue$Type <- c(rep("With lure", times=10), rep("Without lure", times=10))
 cpue$CPUE <- as.numeric(cpue$CPUE)
-cpue$Week <- factor(cpue$Week, levels=c("Average","1","2","3","4","5","6","7","8","9","10","11","12"))
-cpue$Symbol <- c("Average",rep("With lure", times=12), "Average", rep("Without lure", times=12))
+cpue$Week <- factor(cpue$Week, levels=c("Average","1","2","3","4","5","6","7","8","9"))
+cpue$Symbol <- c("Average",rep("With lure", times=9), "Average", rep("Without lure", times=9))
 
 
 plot1a <- ggplot(data = cpue, aes(x = Week, y = CPUE, fill = Type, group = Type)) +
@@ -24,9 +24,9 @@ plot1a <- ggplot(data = cpue, aes(x = Week, y = CPUE, fill = Type, group = Type)
   scale_shape_manual(values = c(23,21,21)) +
   scale_fill_manual(values = c("#2E6EA6","#2EA6A2"), breaks = c("With lure", "Without lure"), guide = FALSE) +
   # ylab("Catch-per unit effort (snakes/km)") +
-  scale_x_discrete("Week", breaks = c("Average","1","2","3","4","5","6","7","8","9","10","11","12")) +
+  scale_x_discrete("Week", breaks = c("Average","1","2","3","4","5","6","7","8","9")) +
   scale_y_continuous("Catch-per unit effort (snakes/km)", breaks = c(0,0.5,1,1.5,2,2.5,3), limits = c(0,3)) +
-  geom_vline(xintercept = c(1.5, 4.5, 7.5, 10.5, 11.5, 12.5)) +
+  geom_vline(xintercept = c(1.5, 2.5, 5.5, 8.5, 9.5, 10.5)) +
   annotate("rect",xmin=c(0.5),xmax=c(1.5),ymin=-Inf,ymax=Inf,fill="#999999",alpha=0.2)
 
 # png(file="RawDetections.png",width=8,height=6,units="in",res=300)

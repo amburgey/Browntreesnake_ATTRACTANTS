@@ -55,7 +55,7 @@ nind <- nrow(y)
 # Active/not active for when transects run (one less day surveyed for TL)
 act <- as.matrix(dat$act)
 
-# Status of surveys (1 = not active, 2 = active but no scent, 3 = active and scent)
+# Status of surveys (1 = not active, 2 = active but no scent, 3 = active and fresh scent, 4 = active and old scent)
 scent <- as.matrix(dat$scent)
 
 # Number of survey occasions
