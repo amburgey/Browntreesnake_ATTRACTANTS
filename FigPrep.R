@@ -87,11 +87,11 @@ addline_format <- function(x,...){
 plot2 <- ggplot(data=res, aes(x=Parameter, y=MeanEstimate, fill=Parameter)) + 
   geom_point(pch = 21, size = 7) + 
   geom_linerange(data=res, aes(ymin=Q2.5, ymax=Q97.5)) + 
-  facet_wrap(~ Type, scales = "free") +
+  facet_wrap(~ Type, scales = "free", dir = "v") +
   theme(legend.position="none", strip.text.x = element_text(size = 14), axis.text = element_text(size = 12), axis.title = element_text(size = 14)) + 
   scale_fill_brewer(palette = "Greens") + 
-  ylab("Mean Estimate") +
-  scale_x_discrete(breaks=unique(res$Parameter), labels=addline_format(c("Abundance", "Encounter Rate x without lure", "Encounter Rate x with lure")))
+  ylab(c("Mean Estimate")) +
+  scale_x_discrete(breaks=unique(res$Parameter), labels=addline_format(c(" ", "Encounter Rate x without lure", "Encounter Rate x with lure")))
 
 png(file="EstimatesLures.png",width=8,height=6,units="in",res=300)
 plot2
@@ -183,11 +183,11 @@ addline_format <- function(x,...){
 plot5 <- ggplot(data=res, aes(x=Parameter, y=MeanEstimate, fill=Parameter)) + 
   geom_point(pch = 21, size = 7) + 
   geom_linerange(data=res, aes(ymin=Q2.5, ymax=Q97.5)) + 
-  facet_wrap(~ Type, scales = "free") +
+  facet_wrap(~ Type, scales = "free", dir = "v") +
   theme(legend.position="none", strip.text.x = element_text(size = 14), axis.text = element_text(size = 12), axis.title = element_text(size = 14), plot.title = element_text(color="black", size=14, face="bold.italic")) + 
   scale_fill_brewer(palette = "Oranges") + 
   ylab("Mean Estimate") +
-  scale_x_discrete(breaks=unique(res$Parameter), labels=addline_format(c("Abundance", "Encounter Rate x without scent", "Encounter Rate x with fresh scent", "Encounter Rate x with old scent")))  #+
+  scale_x_discrete(breaks=unique(res$Parameter), labels=addline_format(c(" ", "Encounter Rate x without scent", "Encounter Rate x with fresh scent", "Encounter Rate x with old scent")))  #+
   # ggtitle("No scent, sprayed today, and sprayed yesterday separate")
 
 library(ggpubr)
@@ -199,6 +199,6 @@ library(ggpubr)
 # dev.off()
 ## All together
 png(file="EstimatesLuresScents.png",width=10,height=6,units="in",res=600)
-ggarrange(plot2, plot5, nrow = 2, ncol = 1, labels = "AUTO")
+ggarrange(plot2, plot5, nrow = 1, ncol = 2, labels = "AUTO")
 dev.off()
 
