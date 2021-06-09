@@ -10,6 +10,11 @@ CPUEfromScent.xlsx
 CPUEfromScentTruncated.xlsx
 ScentNoScentTrail.xlsx
 
+## .csv of full data and CPUE
+CPUEfromScent.csv
+CPUEfromLureTruncated.csv
+CPUEfromScentTruncated.csv
+
 ## Figures
 EstimatesLures.png
 EstimatesScents.png
