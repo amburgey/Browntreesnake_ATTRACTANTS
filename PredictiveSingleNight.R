@@ -60,16 +60,16 @@ for(l in 1:length(STATUS)){   ## do for a situation where every cell is no lure,
   }
 }
 
-## Mean probability of capture on a grid with no lures
+## Mean probability of encountering a snake on a grid with no lures
 NTLp <- mean(p[1,,1])
 
-## Probability of capturing a snake on grid during an evening with no lures
+## Probability of detecting a snake across the area during an evening with no lures
 NTLpstar <- 1-prod(1-p[1,,1])
 
-## Mean probability of capture on a grid with lures
+## Mean probability of encountering a snake on a grid with lures
 TLp <- mean(p[1,,2])
 
-## Probability of capturing a snake on grid during an evening with lures
+## Probability of detecting a snake across the area during an evening with lures
 TLpstar <- 1-prod(1-p[1,,2])
 
 

@@ -104,6 +104,9 @@ model {
   
   N <- sum(z[])
   D <- N/A
+  delta1 <- lam0[1] - lam0[2]
+  delta2 <- lam0[1] - lam0[3]
+  delta3 <- lam0[3] - lam0[2]
   
 }")
 
@@ -124,10 +127,10 @@ inits <- function(){
   list (sigma=runif(1,40,50), z=c(rep(1,nind),rep(0,M-nind)), s=sst, psi=runif(1), lam0=runif(3,0.05,0.07))
 }
 
-parameters <- c("sigma","psi","N","D","lam0")
+parameters <- c("sigma","psi","N","D","lam0","delta1","delta2","delta3")
 
 out <- jagsUI("SCR0_DataAug3cats.txt", data=jags.data, inits=inits, parallel=TRUE,
             n.chains=nc, n.burnin=nb,n.adapt=nAdapt, n.iter=ni, parameters.to.save=parameters)
 
-save(out, file="SCRVISscentnoscentGroupOwnCatFullTime.RData")
+save(out, file="SCRVISscentnoscentGroupOwnCattestrun.RData")
 

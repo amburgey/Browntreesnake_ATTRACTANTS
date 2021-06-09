@@ -24,5 +24,8 @@ model {
   
   N <- sum(z[])
   D <- N/A
+  delta1 <- lam0[1] - lam0[2]
+  delta2 <- lam0[1] - lam0[3]
+  delta3 <- lam0[3] - lam0[2]
   
 }
