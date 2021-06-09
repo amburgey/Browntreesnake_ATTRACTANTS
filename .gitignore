@@ -2,3 +2,16 @@
 .Rhistory
 .RData
 .Ruserdata
+
+## .xlsx datasheets
+CPUEfromAYAreport.xlsx
+CPUEfromLureTruncated.xlsx
+CPUEfromScent.xlsx
+CPUEfromScentTruncated.xlsx
+ScentNoScentTrail.xlsx
+
+## Figures
+EstimatesLures.png
+EstimatesScents.png
+RawDetectionsBoth.png
+RawDetectionsOLD.png
