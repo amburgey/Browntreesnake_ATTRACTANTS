@@ -2,7 +2,79 @@
 
 rm(list = ls())
 
-##### LURE PROJECT #####
+##### LURE PROJECT using all #####
+
+load("SCRVISlurenolure.RData")
+
+## Establish parameters for detection, lam0[1] = no trap lure, lam0[2] = trap lure
+sigma <- out$sims.list$sigma
+lam0 <- out$sims.list$lam0
+
+## Grid
+locs <- secr::make.grid(nx = 13, ny = 27, spacex = 16, spacey = 8)
+pts <- as.matrix(locs)
+J <- nrow(pts)
+
+## Status of all grid cells that evening (1 = no lure, 2 = lure)
+STATUS <- c(1,2)
+
+## Define state-space of point process. (i.e., where animals live)
+delta<- 11.874929
+Xl<-min(locs[,1]) - delta
+Xu<-max(locs[,1]) + delta
+Yl<-min(locs[,2]) - delta
+Yu<-max(locs[,2]) + delta
+## Check area: 
+A <- (Xu-Xl)*(Yu-Yl)
+
+# Number of nights trapping (just one)
+K <- 1
+
+## Snake activity center is in center of grid
+S <- as.data.frame(matrix(as.matrix(locs[176,]), nrow = 1, ncol = 2))
+
+## Function to calculate distance between two sets of (x,y) locations
+e2dist <- function(A, B)  {
+  xdif <- outer(A[, 1], B[, 1], "-")
+  ydif <- outer(A[, 2], B[, 2], "-")
+  sqrt(xdif^2 + ydif^2)
+}
+
+#Distance between each individual AC and each trap
+d2 <- e2dist(S,pts)
+
+## Simulate the encounter probability and observations of this individual in every trap and repeat 1000 times
+p <- array(NA,dim = c(length(sigma),J,length(STATUS)))
+
+set.seed(04042021)
+
+for(l in 1:length(STATUS)){   ## do for a situation where every cell is no lure, lure
+  for(j in 1:J){  ## survey location
+    for(s in 1:length(sigma)){## do for every element of out$sims.list$sigma
+      p[s,j,l] <- lam0[s,STATUS[l]]*exp(-(d2[1,j])/(2*sigma[s]*sigma[s]))
+    }
+  }
+}
+
+
+## Mean probability of encountering a snake on a grid with no lures
+NTLp <- mean(p[,,1])
+
+## Probability of detecting a snake across the area during an evening with no lures
+for(s in 1:length(p)){
+  NTLpstar[s,,1] <- 1-prod(1-p[s,,1])  ## NOT FINISHED
+}
+NTLpstar <- 1-prod(pstar[s,,1])
+## calculate q2.5 and 97.5 for NTLpstar because of dimension s
+
+## Mean probability of encountering a snake on a grid with lures
+TLp <- mean(p[,,2])
+
+## Probability of detecting a snake across the area during an evening with lures
+TLpstar <- 1-prod(1-p[,,2])
+
+
+##### LURE PROJECT using mean #####
 
 load("SCRVISlurenolure.RData")
 

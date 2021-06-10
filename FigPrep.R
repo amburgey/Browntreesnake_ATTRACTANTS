@@ -202,3 +202,29 @@ png(file="EstimatesLuresScents.png",width=10,height=6,units="in",res=600)
 ggarrange(plot2, plot5, nrow = 1, ncol = 2, labels = "AUTO")
 dev.off()
 
+
+
+### ENCOUNTER RATE COMPARISON ###
+
+load("SCRVISlurenoluretestrun.RData")
+
+dat1 <- as.data.frame(matrix(c(out$mean$delta,out$q2.5$delta,out$q97.5$delta), nrow = 1, ncol=3))
+colnames(dat1) <- c("Mean","Q2.5","Q97.5")
+dat1$Param <- c("lure-no")
+
+load("SCRVISscentnoscentGroupOwnCattestrun.RData")
+
+dat2 <- as.data.frame(matrix(c(out$mean$delta1,out$mean$delta2,out$mean$delta3,out$q2.5$delta1,out$q2.5$delta2,out$q2.5$delta3,out$q97.5$delta1,out$q97.5$delta2,out$q97.5$delta3), nrow = 3, ncol=3))
+colnames(dat2) <- c("Mean","Q2.5","Q97.5")
+dat2$Param <- c("no-fresh","no-old","old-fresh")
+
+dat <- rbind(dat1,dat2)
+dat$Param <- as.character(dat$Param)
+dat$Param <- factor(dat$Param, levels=unique(dat$Param))
+
+library(ggplot2)
+
+plot1 <- ggplot(dat, aes(x=Param, y=Mean, fill=Param)) + geom_point(pch = 21, size = 7) +
+  geom_linerange(data=dat, aes(ymin=Q2.5, ymax=Q97.5)) +
+  scale_fill_manual(values = c("#A1D99B","#FEE6CE","#FDAE6B","#E6550D")) +
+  geom_hline(yintercept = 0, linetype=2, color="#484848")
