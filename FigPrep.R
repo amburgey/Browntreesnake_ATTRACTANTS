@@ -204,6 +204,18 @@ dev.off()
 
 
 
+### DETECTION PROBABILITY COMPARISON ###
+
+dat <- as.data.frame(matrix(c(0.66,0.76,0.39,0.39,0.28,0.55,0.64,0.32,0.26,0.21,0.77,0.86,0.47,0.53,0.37,"No lure", "Lure", "No scent", "Old scent", "Fresh scent"), nrow = 5, ncol = 4))
+colnames(dat) <- c("Mean","Q2.5","Q97.5","Treatment")
+
+plot1 <- ggplot(dat, aes(x=Treatment, y=Mean, fill=Treatment)) + geom_point(pch = 21, size = 7) +
+  geom_linerange(data=dat, aes(ymin=Q2.5, ymax=Q97.5)) +
+  scale_fill_manual(values = c("#E5F5E0","#A1D99B","#FEE6CE","#FDAE6B","#E6550D")) +
+  geom_hline(yintercept = 0, linetype=2, color="#484848")
+
+
+
 ### ENCOUNTER RATE COMPARISON ###
 
 load("SCRVISlurenoluretestrun.RData")
@@ -222,9 +234,8 @@ dat <- rbind(dat1,dat2)
 dat$Param <- as.character(dat$Param)
 dat$Param <- factor(dat$Param, levels=unique(dat$Param))
 
-library(ggplot2)
-
 plot1 <- ggplot(dat, aes(x=Param, y=Mean, fill=Param)) + geom_point(pch = 21, size = 7) +
   geom_linerange(data=dat, aes(ymin=Q2.5, ymax=Q97.5)) +
   scale_fill_manual(values = c("#A1D99B","#FEE6CE","#FDAE6B","#E6550D")) +
   geom_hline(yintercept = 0, linetype=2, color="#484848")
+
