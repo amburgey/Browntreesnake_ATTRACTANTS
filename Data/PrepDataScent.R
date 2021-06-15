@@ -1,6 +1,6 @@
-### Preparing data for SCR analysis for VIS lure vs no lure project
-### Data was collected in 2015 where biologists walked transects in CP that either had traps with mice (lure) or no traps (no lure)
-### The goal is to understand if detection probability is different between these two scenarios
+### Preparing data for SCR analysis for visual survey - lure vs no lure project
+### Data was collected in 2016 where biologists walked transects in CP with or without attractant applied
+### The goal is to understand if detection probability is different between scenarios
 ### In the case of an incipient or suppressed (low density) population, any way that can maximize detection probability of brown treesnakes can be a useful resource for surveyors
 
 library(dplyr)
@@ -15,7 +15,7 @@ library(abind)
 PrepDat <- function(caps,survs){
 
   ##### CAPTURE DATA #####
-  ## Remove transects that aren't "core"
+  ## Remove transects that aren't "core" - i.e., not part of the main survey grid
   caps <- caps[!(caps$TRANSECT=="SWE" | caps$TRANSECT=="NEE"| caps$TRANSECT=="PR" | caps$LOCATION=="0" | caps$LOCATION=="14"),]
   caps <- droplevels(caps)
   caps$Date2 <- as.Date(as.character(caps$Date), format = "%d-%b-%y")
@@ -24,6 +24,7 @@ PrepDat <- function(caps,survs){
   
   
   ##### SURVEY DATA #####
+  ## Remove transects that aren't "core" - i.e., not part of the main survey grid
   survs <- survs[!(survs$TRANID=="SWE" | survs$TRANID=="NEE"),]
   ## Expand survey records to have a record per transect point (1-13) rather than just for overall transect
   survpts <- survs[rep(seq_len(nrow(survs)), each = 13), ]
@@ -35,28 +36,19 @@ PrepDat <- function(caps,survs){
   ## Create matrix of active/inactive traps
   act <- ifelse(as.matrix(survpts[,-1]) > 0, 1, 0)
   
-  ## Create matrix of spray vs unsprayed transects (1 = inactive, 2 = active and unsprayed, 3 = active and sprayed)
-  # scent <- ifelse(as.matrix(survpts[,-1]) >= 2, 3, 
-  #                 ifelse(as.matrix(survpts[,-1]) == 1, 2,
-  #                   ifelse(as.matrix(survpts[,-1]) == 0, 1, 999)))
-  
-  # scent <- ifelse(as.matrix(survpts[,-1]) == 3, 2, ## change sprayed 24 hrs later to active but not sprayed
-  #                 ifelse(as.matrix(survpts[,-1]) == 2, 3,
-  #                   ifelse(as.matrix(survpts[,-1]) == 1, 2,
-  #                     ifelse(as.matrix(survpts[,-1]) == 0, 1, 999))))
-  
-  scent <- ifelse(as.matrix(survpts[,-1]) == 3, 4, ## change sprayed 24 hrs later to its own category
+  ## Create matrix of spray vs. fresh sprayed vs. old sprayed transects (1 = inactive, 2 = active and unsprayed, 3 = active and sprayed, 4 =  active and sprayed 24 hours ago)
+  scent <- ifelse(as.matrix(survpts[,-1]) == 3, 4,
                   ifelse(as.matrix(survpts[,-1]) == 2, 3,
                     ifelse(as.matrix(survpts[,-1]) == 1, 2,
                       ifelse(as.matrix(survpts[,-1]) == 0, 1, 999))))
 
-  ## Create vector to use for sorting
+  ## Create site name vector to use for sorting
   siteord <- survpts[,1]
   colnames(siteord) <- c("TRANID")
   
   
   ##### RESHAPE FOR ANALYSIS #####
-  ## Check that no dates are missing from capture data (i.e., an animal was never found during a survey)
+  ## Check that no dates are missing from capture data (i.e., an animal was found when no survey conducted)
   if(length(dates) != length(unique(caps$Date2)))
      stop("Mismatch in number of surveys in cap and surv data")
   

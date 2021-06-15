@@ -1,9 +1,9 @@
-### Summarizing results
+### Results: calculate the number of posterior samples where encounter rate1 > encounter rate 2
 
 library(jagsUI)
 
 ## Probability that lamba[lure] > lambda[no lure]
-load("SCRVISlurenolure.RData")
+load("Results/SCRVISlurenolure.RData")
 
 ## Difference between lambda[lure] - lambda[no lure]
 temp <- out$sims.list$lam0[,2] - out$sims.list$lam0[,1]
@@ -14,7 +14,7 @@ length(larger)/length(out$sims.list$lam0[,1])
 
 
 ## Probability that lamba[no scent] > lambda[fresh scent], lambda[no scent] > lambda[old scent],lambda[old scent] > lambda[fresh scent]
-load("SCRVISscentnoscentGroupOwnCat.RData")
+load("Results/SCRVISscentnoscent.RData")
 
 ## Difference between lambda[no scent] - lambda[fresh scent]
 temp <- out$sims.list$lam0[,1] - out$sims.list$lam0[,2]
