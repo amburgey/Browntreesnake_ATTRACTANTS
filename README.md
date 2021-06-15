@@ -1,4 +1,4 @@
-### In the case of an incipient (aka, low density) population of brown treesnakes (*Boiga irregularis*), any way that we can maximize the encounter rate and thus detection probability of brown treesnakes across the landscape can be a useful resource for surveyors. These two projects were our attempts to understand if hotspots of increased detection probability could be created using attractants to facilitate a rapid response to a brown treesnake invasion. Both of these studies were conducted in the Closed Population (CP) on the island of Gu$aring;han.
+### In the case of an incipient (aka, low density) population of brown treesnakes (*Boiga irregularis*), any way that we can maximize the encounter rate and thus detection probability of brown treesnakes across the landscape can be a useful resource for surveyors. These two projects were our attempts to understand if hotspots of increased detection probability could be created using attractants to facilitate a rapid response to a brown treesnake invasion. Both of these studies were conducted in the Closed Population (CP) on the island of Gu&aring;han.
 
 ## Attractant One: VIS lure/no lure
 
