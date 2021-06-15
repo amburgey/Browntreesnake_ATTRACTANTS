@@ -14,3 +14,5 @@
 
 ## We fit two models in a Spatially Explicit Capture-Recapture framework. Details of this work can be found in the published journal article on this topic.
 ## Details of article TBD
+
+### Start in Scripts to run data prep and analyses; Files to calculate results are EncounterRateComparisons and PredictiveSingleNight
