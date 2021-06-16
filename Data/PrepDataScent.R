@@ -18,6 +18,7 @@ PrepDat <- function(caps,survs){
   ## Remove transects that aren't "core" - i.e., not part of the main survey grid
   caps <- caps[!(caps$TRANSECT=="SWE" | caps$TRANSECT=="NEE"| caps$TRANSECT=="PR" | caps$LOCATION=="0" | caps$LOCATION=="14"),]
   caps <- droplevels(caps)
+  ## Make sure recognized as date
   caps$Date2 <- as.Date(as.character(caps$Date), format = "%d-%b-%y")
   ## Add transect ID
   caps$TRANID <- paste(caps$TRANSECT,caps$LOCATION, sep="")
@@ -33,7 +34,7 @@ PrepDat <- function(caps,survs){
   rownames(survpts) <- NULL
   colnames(survpts) <- NULL
   
-  ## Create matrix of active/inactive traps
+  ## Create matrix of active/inactive survey locations
   act <- ifelse(as.matrix(survpts[,-1]) > 0, 1, 0)
   
   ## Create matrix of spray vs. fresh sprayed vs. old sprayed transects (1 = inactive, 2 = active and unsprayed, 3 = active and sprayed, 4 =  active and sprayed 24 hours ago)
@@ -60,9 +61,6 @@ PrepDat <- function(caps,survs){
   sched$TRANID <- as.factor(sched$TRANID)
   sched$Act <- 0
   
-  ## Find names of missing columns
-  Missing <- setdiff(as.vector(as.matrix(siteord)),unique(caps$TRANID))
-  
   ## Add 0 or 1 to indicate captured snake at survey
   caps$TRANID <- factor(caps$TRANID, levels = as.vector(as.matrix(siteord)))
   caps$Act <- 1
@@ -70,7 +68,7 @@ PrepDat <- function(caps,survs){
   caps <- caps[order(caps$TRANID),]
   snks <- reshape2::acast(data = caps, formula = PITTAG ~ TRANID ~ Date2, fun.aggregate = length, value.var = "EFFORTID")
   snks <- snks[-dim(snks)[1],,]
-  ## Because added negative data, need to remove row with PITTAG == NA
+  ## Because added missing transects, need to remove row with PITTAG == NA
   
   prepdat <- list(act = act, snks = snks, scent = scent)
   

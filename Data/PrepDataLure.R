@@ -18,6 +18,7 @@ PrepDat <- function(caps,survs){
   ## Remove transects that aren't "core" - i.e., not part of the main survey grid
   caps <- caps[!(caps$TRANSECT=="SWE" | caps$TRANSECT=="NEE"),]
   caps <- droplevels(caps)
+  ## Make sure recognized as date
   caps$Date2 <- as.Date(as.character(caps$Date), format = "%d-%b-%y")
   ## Add transect ID
   caps$TRANID <- paste(caps$TRANSECT,caps$LOCATION, sep="")
@@ -26,6 +27,9 @@ PrepDat <- function(caps,survs){
   
   
   ##### SURVEY DATA #####
+  ## Remove transects that aren't "core" - i.e., not part of the main survey grid
+  survs <- survs[!(survs$TRANSECT=="SWE" | survs$TRANSECT=="NEE"),]
+  ## Make sure recognized as date
   survs$Date2 <- as.Date(as.character(survs$Date), format = "%d-%b-%y")
   ## Expand survey records to have a record per transect point (1-13) rather than just for overall transect
   survpts <- survs[rep(seq_len(nrow(survs)), each = 13), ]
@@ -57,13 +61,13 @@ PrepDat <- function(caps,survs){
   all3<- all3[!(all3$EFFORTID == "12318" & all3$TRANID == "T3"),]
   all3 <- all3[!(all3$EFFORTID == "12319" & all3$TRANID == "H6"),]
   
-  ## Add TYPE == no lure (NTL) to all with missing survey info, found in MASTER-ARCHIVAL-MARKREL-ALL file
+  ## Add TYPE == no lure (NTL) to all with missing survey info (based on survey datasheets)
   for(i in 1:nrow(all3)){
     if(!is.na(all3[i,6]) & is.na(all3[i,12])){
       all3[i,12] <- "NTL"
     }
   }
-  
+  ## Specify Transect is factor and order
   all3$TRANID <- factor(all3$TRANID,levels=siteord)
   all3 <- all3[order(all3$TRANID),]
   
@@ -71,6 +75,7 @@ PrepDat <- function(caps,survs){
   act <- all3[,c("Date2","TRANID")]
   act$Active <- 1
   act <- reshape2::dcast(act, TRANID ~ Date2, fun.aggregate = length, value.var = "Active")
+  ## Change to 1 (active) or 0 (inactive)
   act <- act %>% mutate_if(is.numeric, ~1 * (. > 0))
   
   ##### Create TRAP by Date dataframe #####
@@ -78,7 +83,9 @@ PrepDat <- function(caps,survs){
   ## Inactive = 1
   ## Active with no lure = 2
   ## Active with lure = 3
-  suball <- all3[,c(3,5,12)]
+  ## Subset to relevant columns
+  suball <- all3[,c("Date2","TRANID","TYPE")]
+  ## Give numeric indicator
   suball$TYPE <- ifelse(suball$TYPE == "NTL", 2, 3)
   stat <- reshape2::dcast(suball, TRANID ~ Date2, value.var = "TYPE", fun.aggregate = unique, fill = 1)
   

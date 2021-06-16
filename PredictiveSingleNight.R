@@ -1,9 +1,11 @@
 ### Integrating across space to understand how encounter probability scales to probability of detecton on a given night
 ## Simulate a single snake with an activity center in the center of the study area
-## Each treatment is applied uniformly on a given evening (i.e., ever grid cell receives no lure vs. each receives lure)
+## Each treatment is applied uniformly on a given evening (i.e., every grid cell receives no lure vs. every grid cell receives lure)
 ## Parameters that affect detection (sigma and lam0) are from model results from each study
 
 rm(list = ls())
+
+library(jagsUI)
 
 ##### LURE PROJECT #####
 
@@ -13,7 +15,7 @@ load("Results/SCRVISlurenolure.RData")
 sigma <- out$sims.list$sigma
 lam0 <- out$sims.list$lam0
 
-## Study area grid
+## Study area grid, trap locations, and number of traps
 locs <- secr::make.grid(nx = 13, ny = 27, spacex = 16, spacey = 8)
 pts <- as.matrix(locs)
 J <- nrow(pts)
@@ -21,7 +23,9 @@ J <- nrow(pts)
 ## Status of all grid cells that evening (1 = no lure, 2 = lure)
 STATUS <- c(1,2)
 
-## Define state-space of point process. (i.e., where animals live)
+## Define state-space of point process. (i.e., where animals live).
+## "delta" just adds a fixed buffer to the outer extent of the traps.
+## Don't need to estimate state-space since we know it (5 ha enclosed pop)
 delta<- 11.874929
 Xl<-min(locs[,1]) - delta
 Xu<-max(locs[,1]) + delta
@@ -33,7 +37,7 @@ A <- (Xu-Xl)*(Yu-Yl)
 # Number of nights trapping (just one)
 K <- 1
 
-## Snake activity center is in center of grid
+## Snake activity center (AC) is in center of grid
 S <- as.data.frame(matrix(as.matrix(locs[176,]), nrow = 1, ncol = 2))
 
 ## Function to calculate distance between two sets of (x,y) locations
@@ -94,7 +98,7 @@ load("Results/SCRVISscentnoscent.RData")
 sigma <- out$sims.list$sigma
 lam0 <- out$sims.list$lam0
 
-## Study area grid
+## Study area grid, trap locations, and number of traps
 locs <- secr::make.grid(nx = 13, ny = 27, spacex = 16, spacey = 8)
 pts <- as.matrix(locs)
 J <- nrow(pts)
@@ -102,7 +106,9 @@ J <- nrow(pts)
 ## Status of all grid cells that evening (1 = no scent, 2 = fresh scent, 3 = old scent) 
 STATUS <- c(1,2,3)
 
-## Define state-space of point process. (i.e., where animals live)
+## Define state-space of point process. (i.e., where animals live).
+## "delta" just adds a fixed buffer to the outer extent of the traps.
+## Don't need to estimate state-space since we know it (5 ha enclosed pop)
 delta<- 11.874929
 Xl<-min(locs[,1]) - delta
 Xu<-max(locs[,1]) + delta
@@ -114,7 +120,7 @@ A <- (Xu-Xl)*(Yu-Yl)
 # Number of nights trapping (just one)
 K <- 1
 
-## Snake activity center is in center of grid
+## Snake activity center (AC) is in center of grid
 S <- as.data.frame(matrix(as.matrix(locs[176,]), nrow = 1, ncol = 2))
 
 ## Function to calculate distance between two sets of (x,y) locations

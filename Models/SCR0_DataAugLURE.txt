@@ -2,28 +2,28 @@
 model {
 
   for(l in 1:2){
-    lam0[l]~dunif(0,1) ## Detection model with 1, 2, 3 indicator
+    lam0[l]~dunif(0,1) ## Detection model with 1, 2 indicator for treatment (inactive occasions skipped)
   }
-  sigma ~ dunif(0,50)
+  sigma ~ dunif(0,50) ## Spatial decay parameter
   psi ~ dunif(0,1)
 
-  for(i in 1:M){
+  for(i in 1:M){  ## for all augmented individuals
     z[i] ~ dbern(psi)
     s[i,1] ~ dunif(Xl,Xu)
     s[i,2] ~ dunif(Yl,Yu)
   
-    for(j in 1:J) {
+    for(j in 1:J) {  ## for all survey locations
       d2[i,j]<- pow(s[i,1]-pts[j,1],2) + pow(s[i,2]-pts[j,2],2)
         
-      for(k in 1:nActive[j]){
+      for(k in 1:nActive[j]){  ## for all active occasions
         p[i,j,ActiveOcc[j,k]] <- z[i]*lam0[STATUS[j,ActiveOcc[j,k]]]*exp(-(d2[i,j])/(2*sigma*sigma))
         y[i,j,ActiveOcc[j,k]] ~ dbern(p[i,j,ActiveOcc[j,k]])
-      }
-    }
-  }
+      } # K
+    } # J
+  }  # M
   
-  N <- sum(z[])
-  D <- N/A
-  delta <- lam0[2] - lam0[1]
+  N <- sum(z[])               ## Abundance
+  D <- N/A                    ## Density
+  delta <- lam0[2] - lam0[1]  ## Difference between lure and no lure enc. rate
   
 }

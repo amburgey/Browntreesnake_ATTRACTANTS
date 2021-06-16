@@ -2,7 +2,7 @@
 
 library(jagsUI)
 
-## Probability that lamba[lure] > lambda[no lure]
+## First: Probability that lamba[lure] > lambda[no lure]
 load("Results/SCRVISlurenolure.RData")
 
 ## Difference between lambda[lure] - lambda[no lure]
@@ -13,7 +13,7 @@ larger <- temp[temp > 0]
 length(larger)/length(out$sims.list$lam0[,1])
 
 
-## Probability that lamba[no scent] > lambda[fresh scent], lambda[no scent] > lambda[old scent],lambda[old scent] > lambda[fresh scent]
+## Second: Probability that lamba[no scent] > lambda[fresh scent], lambda[no scent] > lambda[old scent],lambda[old scent] > lambda[fresh scent]
 load("Results/SCRVISscentnoscent.RData")
 
 ## Difference between lambda[no scent] - lambda[fresh scent]
