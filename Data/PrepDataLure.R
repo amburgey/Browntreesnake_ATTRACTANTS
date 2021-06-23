@@ -36,7 +36,15 @@ PrepDat <- function(caps,survs){
   survpts$TRANID <- paste(survpts$TRANSECT, rep(1:13, times = (dim(survpts)[1]/13)), sep = "")
   
   ## Create vector to use for sorting
-  siteord <- c(unique(survpts$TRANID)[1:13], unique(survpts$TRANID)[27:52], unique(survpts$TRANID)[313:325], unique(survpts$TRANID)[53:182], unique(survpts$TRANID)[326:338], unique(survpts$TRANID)[183:247], unique(survpts$TRANID)[339:351], unique(survpts$TRANID)[248:312], unique(survpts$TRANID)[14:26])
+  siteord <- c(unique(survpts$TRANID)[1:13], 
+               unique(survpts$TRANID)[27:52], 
+               unique(survpts$TRANID)[313:325], 
+               unique(survpts$TRANID)[53:182], 
+               unique(survpts$TRANID)[326:338], 
+               unique(survpts$TRANID)[183:247], 
+               unique(survpts$TRANID)[339:351], 
+               unique(survpts$TRANID)[248:312], 
+               unique(survpts$TRANID)[14:26])
   
   
   ##### RESHAPE FOR ANALYSIS #####
