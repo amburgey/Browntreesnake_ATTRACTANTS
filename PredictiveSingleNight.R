@@ -150,7 +150,7 @@ for(l in 1:length(STATUS)){   ## do for a situation where every cell is no lure,
 ## Mean probability of encountering a snake on a grid with no scent
 NSp <- mean(p[,,1])
 
-## Probability of detecting a snake across the area during an evening with no lures
+## Probability of detecting a snake across the area during an evening with no scent
 NSpstar <- vector()
 for(s in 1:nrow(p)){
   NSpstar[s] <- 1-prod(1-p[s,,1])
