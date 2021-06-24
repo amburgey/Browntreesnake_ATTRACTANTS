@@ -1,4 +1,4 @@
-### Integrating across space to understand how encounter probability scales to probability of detecton on a given night
+### Integrating across space to understand how encounter probability scales to probability of detection on a given night
 ## Simulate a single snake with an activity center in the center of the study area
 ## Each treatment is applied uniformly on a given evening (i.e., every grid cell receives no lure vs. every grid cell receives lure)
 ## Parameters that affect detection (sigma and lam0) are from model results from each study

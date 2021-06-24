@@ -1,5 +1,5 @@
-### SCR analysis for visual survey - lure vs no lure project
-### Data was collected in 2015 where biologists walked transects in CP that either had traps with mice (lure) or no traps (no lure)
+### SCR analysis for visual survey (VIS) - lure vs no lure project
+### Data was collected in 2015 where biologists walked transects in the Closed Population (CP) that either had traps with mice (lure) or no traps (no lure)
 ### The goal is to understand if encounter probability is different between these two scenarios
 ### In the case of an incipient or suppressed (low density) population, any way that we can maximize encounter rates (and thus detection probability) of brown treesnakes can be a useful resource for surveyors
 
@@ -10,6 +10,7 @@ rm(list = ls())
 source("Data/PrepDataLure.R")
 
 # Read in capture data and survey data and keep only relevant columns
+# See metadata in ScienceBase repository in README
 caps <- read.csv("Data/CapturesLure.csv")[,c("EFFORTID","Date","PITTAG","SVL","TOTAL","WEIGHT","SEX","TRANSECT","LOCATION")]
 survs <- read.csv("Data/SurveysLure.csv")[,c("EFFORTID","Date","TRANSECT","TYPE")]
 # Restrict to 2-month period to meet assumptions of population closure
@@ -29,7 +30,7 @@ pts <- as.matrix(locs)
 J <- nrow(pts)
 
 ## Define state-space of point process. (i.e., where animals live).
-## "delta" just adds a fixed buffer to the outer extent of the traps.
+## "delta" just adds a fixed buffer to the outer extent of the locations to the fence edge.
 ## Don't need to estimate state-space since we know it (5 ha enclosed pop)
 delta<- 11.874929
 Xl<-min(locs[,1]) - delta
@@ -124,12 +125,6 @@ inits <- function(){
 
 parameters <- c("sigma","psi","N","D","lam0","delta")
 
-## WORKAROUND: https://github.com/rstudio/rstudio/issues/6692
-## Revert to 'sequential' setup of PSOCK cluster in RStudio Console on macOS and R 4.0.0
-if (Sys.getenv("RSTUDIO") == "1" && !nzchar(Sys.getenv("RSTUDIO_TERM")) && 
-    Sys.info()["sysname"] == "Darwin" && getRversion() >= "4.0.0") {
-  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
-}
 out <- jagsUI("Models/SCR0_DataAugLURE.txt", data=jags.data, inits=inits, parallel=TRUE,
             n.chains=nc, n.burnin=nb,n.adapt=nAdapt, n.iter=ni, parameters.to.save=parameters)
 
