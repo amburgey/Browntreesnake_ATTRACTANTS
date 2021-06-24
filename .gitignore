@@ -3,22 +3,5 @@
 .RData
 .Ruserdata
 
-## .xlsx datasheets
-CPUEfromAYAreport.xlsx
-CPUEfromLureTruncated.xlsx
-CPUEfromScent.xlsx
-CPUEfromScentTruncated.xlsx
-ScentNoScentTrail.xlsx
-## phantom .xlsx datasheet
-~$ScentNoScentTrail.xlsx
 
-## .csv of full data and CPUE
-CPUEfromScent.csv
-CPUEfromLureTruncated.csv
-CPUEfromScentTruncated.csv
 
-## Figures
-EstimatesLures.png
-EstimatesScents.png
-RawDetectionsBoth.png
-RawDetectionsOLD.png
