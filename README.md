@@ -1,21 +1,32 @@
 In the case of an incipient (aka, low density) population of brown treesnakes (*Boiga irregularis*), any way that we can maximize the encounter rate and thus detection probability of brown treesnakes across the landscape can be a useful resource for surveyors. These two projects were our attempts to understand if hotspots of increased detection probability could be created using attractants to facilitate a rapid response to a brown treesnake invasion. Both of these studies were conducted in the Closed Population (CP) on the island of Gu&aring;han.
 
 ## Table of Contents
-### Data folder - contains capture and survey information for both studies in addition to scripts to prepare data for analysis
-### Scripts folder - contains scripts to run analyses for each study
-### Models folder - contains model text file for each study
-### Results folder - contains saved results from the analysis of each study
-### EncounterRateComparison - script to run post-analysis comparison
-### PredictiveSingleNight - script to calculate detection probabilities from encounter rates
+Data folder - contains capture and survey information for both studies in addition to scripts to prepare data for analysis
+
+Scripts folder - contains scripts to run analyses for each study
+
+Models folder - contains model text file for each study
+
+Results folder - contains saved results from the analysis of each study
+
+EncounterRateComparison - script to run post-analysis comparison
+
+PredictiveSingleNight - script to calculate detection probabilities from encounter rates
 
 ## Required Packages and Versions Used
-### dplyr_1.4.4
-### reshape2_1.4.4
-### tidyverse_1.3.0
-### secr_4.3.0
-### jagsUI_1.5.1
-### data.table_1.13.0
-### abind_1.4.5
+dplyr_1.4.4
+
+reshape2_1.4.4
+
+tidyverse_1.3.0
+
+secr_4.3.0
+
+jagsUI_1.5.1
+
+data.table_1.13.0
+
+abind_1.4.5
 
 ## Attractant One: visual survey (VIS) lure/no lure
 
