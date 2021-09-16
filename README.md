@@ -54,11 +54,12 @@ The goal was to understand if encounter rate and detection probability were diff
 
 We use an indicator variable (STATUS) to denote when 0 = a transect was not surveyed, 2 = a transect was surveyed but no scent was sprayed, 3 = a transect was surveyed and fresh scent was applied, and 4 = a transect was surveyed and scent had been applied the day before
 
-We fit two models in a Spatially Explicit Capture-Recapture framework. Details of this work can be found in the published journal article on this topic:
+We fit two models in a Spatially Explicit Capture-Recapture framework. 
+
+## Details of article
+Details of this work can be found in the published journal article on this topic:
 
 Amburgey SA, Yackel Adams AA, Gardner B, Lardner B, Knox AJ, Converse SJ (accepted) Tools for increasing visual encounter probabilities for invasive species removal: a case study of brown treesnakes. Neobiota.
-
-## Details of article TBD
 
 ## How to use this repository
 
