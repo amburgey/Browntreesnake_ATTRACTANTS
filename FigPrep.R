@@ -106,7 +106,7 @@ plot2b <- ggplot(data=res, aes(x=Parameter, y=MeanEstimate, fill=Parameter)) +
   geom_point(pch = 21, size = 7) + 
   geom_linerange(data=res, aes(ymin=Q2.5, ymax=Q97.5)) + 
   facet_wrap(~ Type, scales = "free", dir = "h") +
-  theme(legend.position="none", strip.text.x = element_text(size = 14), axis.text = element_text(size = 12), axis.title = element_text(size = 14), plot.title = element_text(color="black", size=14, face="bold.italic")) + 
+  theme(legend.position="none", strip.text.x = element_text(size = 14), axis.text.y = element_text(size = 12), axis.title.y = element_text(size = 14), axis.text.x = element_text(size = 10), axis.title.x = element_blank(), axis.ticks.x = element_blank(), plot.title = element_text(color="black", size=14, face="bold.italic")) + 
   scale_fill_brewer(palette = "Oranges") + 
   ylab("Mean Estimate") +
   scale_x_discrete(breaks=unique(res$Parameter), labels=addline_format(c(" ", "Encounter Probability x without scent", "Encounter Probability x with fresh scent", "Encounter Probability x with old scent")))
