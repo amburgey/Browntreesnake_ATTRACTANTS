@@ -60,7 +60,7 @@ We fit two models in a Spatially Explicit Capture-Recapture framework.
 
 Details of this work can be found in the published journal article on this topic:
 
-Amburgey SA, Yackel Adams AA, Gardner B, Lardner B, Knox AJ, Converse SJ (accepted) Tools for increasing visual encounter probabilities for invasive species removal: a case study of brown treesnakes. Neobiota.
+Amburgey SA, Yackel Adams AA, Gardner B, Lardner B, Knox AJ, Converse SJ. 2021. Tools for increasing visual encounter probabilities for invasive species removal: a case study of brown treesnakes. Neobiota 70: 170-122. https://doi.org/10.3897/neobiota.70.71379
 
 ## How to use this repository
 
